@@ -10,7 +10,7 @@ public class Runner {
             public void run() {
                 JFrame.setDefaultLookAndFeelDecorated(true);
                 JFrame frame = new Display();
-                frame.setPreferredSize(new Dimension(1200, 1000));
+                frame.setPreferredSize(new Dimension(1200, 950));
                 frame.pack();
                 frame.setLocationRelativeTo(null);
                 frame.setVisible(true);
