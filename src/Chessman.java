@@ -6,8 +6,7 @@ import java.util.HashSet;
  */
 public abstract class Chessman {
     private boolean colour;
-    //public HashSet<int[]> possibleMove;
-    public BSTree actions;
+    public LiteralTree actions;
     /*
     true == white
     false == black
@@ -19,8 +18,6 @@ public abstract class Chessman {
         this.coordinate = new int[2];
         this.coordinate[0] = x;
         this.coordinate[1] = y;
-        actions = new BSTree();
-
     }
 
     public boolean getColour() {
@@ -31,33 +28,11 @@ public abstract class Chessman {
         return coordinate;
     }
 
-    public void setCoordinate(int[] coordinate) {
-        this.coordinate = coordinate;
-    }
-
-    public void clearMove(){
-        this.actions = new BSTree();
-    }
-
-//    public void move(int[] newCoordinates,Collocation collocation){
-//        collocation.activeChessman.setCoordinate(newCoordinates);
-//        collocation.activeChessman.clearMove();
-//        //collocation.chessField.
-//        collocation.updateCollocation();
-//    }
-
     void addAction(Moving action){
-        System.out.println("Adding");
-        if(action instanceof Eating) {
-            System.out.println(Integer.toString(action.oldCoordinates[0])+' '+Integer.toString(action.oldCoordinates[1]));
-            System.out.println(Integer.toString(action.newCoordinates[0]) + ' ' + Integer.toString(action.newCoordinates[1]));
-            System.out.println(Integer.toString(((Eating) action).coordinateOfAtePawn[0]) + ' ' + Integer.toString(((Eating) action).coordinateOfAtePawn[1]));
-        }
-        System.out.println("EndOfAdding");
-        actions.add(action.newCoordinates,action);
+        actions.add(action);
     }
 
-    abstract void computePossibleMove(int[] oldCoordinate, int flag);
+    abstract void computePossibleMove(int[] oldCoordinate, int flag,Collocation oldCollacation);
 
     public boolean compareTo(Chessman chessman){
         return this.getCoordinate() == chessman.getCoordinate();
@@ -69,11 +44,6 @@ public abstract class Chessman {
     }
 
     public void changeCoordinates(int[] newCoordinates) {
-//        System.out.println("Change");
-//        System.out.println("old ");
-//        System.out.print(Integer.toString(this.getCoordinate()[0]) + " " + Integer.toString(this.getCoordinate()[1]));
-//        System.out.println("new");
-//        System.out.print(Integer.toString(newCoordinates[0]) + " " + Integer.toString(newCoordinates[1]));
         this.coordinate = newCoordinates;
     }
 }

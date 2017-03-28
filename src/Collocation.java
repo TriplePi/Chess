@@ -4,10 +4,9 @@ import java.util.*;
 /**
  * Created by TriplePi on 30.01.2017.
  */
-class Collocation {
-    Chessman[][] chessField;
+class Collocation implements Cloneable{
+    private Chessman[][] chessField;
     Chessman activeChessman;
-    HashSet<int[]> phantomAteChessman;
     private static Collocation collocationForAll;
 
     public static Collocation getCollocation() {
@@ -15,6 +14,10 @@ class Collocation {
             collocationForAll = new Collocation();
         }
         return collocationForAll;
+    }
+
+    public Collocation clone() throws CloneNotSupportedException {
+        return (Collocation)super.clone();
     }
 
     private Collocation() {
@@ -31,14 +34,13 @@ class Collocation {
 //            this.chessField[6][2 * i + 1] = new Pawn(true, 6, 2 * i + 1);
 //        for (int i = 0; i < 4; i++)
 //            this.chessField[7][2 * i] = new Pawn(true, 7, 2 * i);
-        //this.chessField[4][2] = new Pawn(false, 4, 2);
         int[][] a =
                         {{0,0,0,0,0,0,0,0},
+                        {0,0,0,1,0,0,0,0},
                         {0,0,0,0,0,0,0,0},
-                        {0,-1,0,-1,0,0,0,0},
-                        {0,0,0,0,1,0,0,0},
-                        {0,-1,0,0,0,0,0,0},
+                        {0,0,0,0,0,-1,0,0},
                         {0,0,0,0,0,0,0,0},
+                        {0,0,0,2,0,0,0,0},
                         {0,0,0,0,0,0,0,0},
                         {0,0,0,0,0,0,0,0}};
         for (int i = 0;i<8;i++){
@@ -46,18 +48,21 @@ class Collocation {
                 if (a[i][j]==1){
                     chessField[i][j]=new Pawn(true,i,j);
                 }
-                else if(a[i][j]==-1){
+                if(a[i][j]==-1){
                     chessField[i][j]=new Pawn(false,i,j);
+                }
+                if (a[i][j]==2){
+                    chessField[i][j]=new Queen(true,i,j);
+                }
+                if(a[i][j]==-2){
+                    chessField[i][j]=new Queen(false,i,j);
                 }
             }
         }
         test();
-        phantomAteChessman = new HashSet<>();
     }
 
     void paintChessman(JLabel[][] labels, Icons icons) {
-        int k = 1;
-        int l = 1;
         for (JLabel[] labely : labels) {
             for (JLabel labelx : labely) {
                 labelx.setIcon(null);
@@ -65,7 +70,7 @@ class Collocation {
 
         }
         Class<? extends Chessman> type;
-        for (Chessman[] i : this.chessField) {
+        for (Chessman[] i : chessField) {
             for (Chessman j : i) {
 
                 if (j != null) {
@@ -76,35 +81,30 @@ class Collocation {
                         else
                             labels[j.getCoordinate()[0]][j.getCoordinate()[1]].setIcon(icons.blackPawn);
                     }
+                    if (type == Queen.class){
+                        if (j.getColour())
+                            labels[j.getCoordinate()[0]][j.getCoordinate()[1]].setIcon(icons.whiteQueen);
+                        else
+                            labels[j.getCoordinate()[0]][j.getCoordinate()[1]].setIcon(icons.blackQueen);
+                    }
                 }
-                k++;
             }
-            k = 1;
-            l++;
         }
     }
 
     void paintPossibleMove(int[] coordinate, JLabel[][] labels, Icons icons) {
-//        for (JLabel label1[] : labels) {
-//            for (JLabel label2 : label1) {
-//                if (label2.getIcon() == icons.green) {
-//                    label2.setIcon(null);
-//                }
-//            }
-//        }
-        phantomAteChessman.clear();
-        if (activeChessman != null)
-            activeChessman.clearMove();
         activeChessman = this.getChessman(coordinate);
-        activeChessman.addAction(new Moving(activeChessman.getCoordinate(), activeChessman.getCoordinate()));
-        Moving moving = new Moving(activeChessman.getCoordinate(),activeChessman.getCoordinate());
-        activeChessman.actions.add(moving.newCoordinates,moving);
-        ((Pawn) (this.getChessman(coordinate))).computePossibleMove(coordinate, 0);
-
-        for (int[] coordinateForOneAct : activeChessman.actions.getMoves()) {
-            //System.out.println(coordinateForOneAct[0] + coordinateForOneAct[1]);
-            labels[coordinateForOneAct[0]][coordinateForOneAct[1]].setIcon(icons.green);
+        activeChessman.actions = new LiteralTree(activeChessman.getCoordinate());
+        this.getChessman(coordinate).computePossibleMove(coordinate, 0,Collocation.getCollocation());
+        HashMap<int[],String> allMovesForOneChessman = activeChessman.actions.getMoves();
+        for (int[] coordinateForOneAct : allMovesForOneChessman.keySet()) {
+            JLabel label = labels[coordinateForOneAct[0]][coordinateForOneAct[1]];
+            label.setIcon(icons.green);
         }
+    }
+
+    void act(int[] coordinatesOfGreenPoint){
+        Collocation.getCollocation().activeChessman.actions.getBranchByCoord(coordinatesOfGreenPoint).forEach(Moving::doing);
     }
 
     private void setChessman(Chessman chessman) {
@@ -112,14 +112,13 @@ class Collocation {
     }
 
     Chessman getChessman(int[] coordinate) {
-        Chessman chessman = null;
         if (this.chessField[coordinate[0]][coordinate[1]] != null)
             return this.chessField[coordinate[0]][coordinate[1]];
         return null;
     }
 
     void unsetChessman(int[] coordinate) {
-        this.chessField[coordinate[0]][coordinate[1]] = null;
+        chessField[coordinate[0]][coordinate[1]] = null;
     }
 
     void updateCollocation() {
@@ -128,13 +127,8 @@ class Collocation {
                 int[] buffer = {i, j};
                 try {
                     if (this.getChessman(buffer).getCoordinate()[0] != buffer[0] || this.getChessman(buffer).getCoordinate()[1] != buffer[1]) {
-//                        System.out.println();
-//                        System.out.println(Integer.toString(buffer[0]) + Integer.toString(buffer[1]));
-//                        System.out.println(Integer.toString(this.getChessman(buffer).getCoordinate()[0]) + Integer.toString(this.getChessman(buffer).getCoordinate()[1]));
-//                        System.out.println();
                         this.setChessman(this.getChessman(buffer));
                         this.chessField[buffer[0]][buffer[1]] = null;
-                        //System.out.println(Integer.toString(buffer[0]) + Integer.toString(buffer[1]));
                     }
                 } catch (NullPointerException e) {
                 }
@@ -143,7 +137,7 @@ class Collocation {
     }
 
     void test() {
-        for (Chessman[] chessmans : this.chessField) {
+        for (Chessman[] chessmans : chessField) {
             System.out.println();
             for (Chessman chessman : chessmans) {
                 if (chessman == null) {
@@ -151,13 +145,12 @@ class Collocation {
                 } else {
                     System.out.print("1  ");
                 }
-
             }
-
         }
+        System.out.println();
     }
 
-
+    void setQueen(int[] coord){
+        chessField[coord[0]][coord[1]] = new Queen(activeChessman.getColour(),coord[0],coord[1]);
+    }
 }
-
-

@@ -7,6 +7,7 @@ import java.awt.event.MouseMotionAdapter;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.util.Arrays;
 
 /**
  * Created by TriplePi on 30.01.2017.
@@ -135,53 +136,25 @@ public class Display extends JFrame {
 
         public void mouseClicked(MouseEvent e) {
             JLabel label = (JLabel) e.getSource();
-            if (startField.activeChessman!=null && startField.getChessman((int[]) label.getClientProperty("coordinate"))!= null) {
-                if (!startField.activeChessman.compareTo(startField.getChessman((int[]) label.getClientProperty("coordinate")))) {
-                    for (JLabel[] label1 : chessField) {
-                        for (JLabel label2 : label1) {
+            if (startField.activeChessman!=null && startField.getChessman((int[]) label.getClientProperty("coordinate"))!= null)
+                if (!startField.activeChessman.compareTo(startField.getChessman((int[]) label.getClientProperty("coordinate"))))
+                    for (JLabel[] label1 : chessField)
+                        for (JLabel label2 : label1)
                             if (label2.getIcon() == icons.green)
                                 label2.setIcon(null);
-                        }
-                    }
-                }
-            }
-            if(startField.getChessman((int[]) label.getClientProperty("coordinate"))!=null && startField.getChessman((int[]) label.getClientProperty("coordinate")).getColour() == moveColour) {
+            if(startField.getChessman((int[]) label.getClientProperty("coordinate"))!=null && startField.getChessman((int[]) label.getClientProperty("coordinate")).getColour() == moveColour)
                 startField.paintPossibleMove((int[]) label.getClientProperty("coordinate"), chessField, icons);
-            }
             else{
-                if (label.getIcon() == icons.green){
-                    for (Moving action :startField.activeChessman.actions.getBranch((int[]) label.getClientProperty("coordinate"))) {
-                        System.out.println(Integer.toString(action.newCoordinates[0])+" "+Integer.toString(action.newCoordinates[1]));
-                        action.doing();
-                        startField.paintChessman(chessField,icons);
-                    }
-                    startField.activeChessman.clearMove();
-                    startField.paintChessman(chessField,icons);
-                    ;
-//                    for (JLabel[] label1 : chessField) {
-//                        for (JLabel label2 : label1) {
-//                            if (label2.getIcon() == icons.green)
-//                                label2.setIcon(null);
-//                        }
-//                    }
-
-
-//                    for (JLabel[] label1:chessField) {
-//                        for (JLabel label2:label1) {
-//                            label2.repaint();
-//                        }
-//                    }
-
+                if (label.getIcon() == icons.green) {
+                    //startField.paintChessman(chessField,icons);
+                    int[] coordinatesOfLabel = (int[]) label.getClientProperty("coordinate");
+                    startField.act(coordinatesOfLabel);
                     startField.test();
                     startField.activeChessman = null;
                     moveColour = !moveColour;
-                    startField.paintChessman(chessField,icons);
+                    startField.paintChessman(chessField, icons);
                 }
-                //startField.paintChessman(chessField,icons);
             }
-            //startField.paintChessman(chessField,icons);
-
-
         }
 
         public void mouseEntered(MouseEvent e) {

@@ -1,16 +1,23 @@
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * Created by TriplePi on 22.03.2017.
  */
 public class Queen extends Chessman {
-    private Queen(boolean colour, int x,int y){
-        super(colour,x,y);
+    Queen(boolean colour, int x, int y) {
+        super(colour, x, y);
     }
 
-
-
-    void computePossibleMove(int[] oldCoordinate, int flag){
-        Chessman active = Collocation.getCollocation().activeChessman;
+    void computePossibleMove(int[] oldCoordinate, int flag, Collocation oldCollocation) {
         Collocation collocation = Collocation.getCollocation();
+//        try {
+//            collocation = Collocation.getCollocation().clone();
+//        }
+//        catch (CloneNotSupportedException e){
+//        }
+        Chessman active = Collocation.getCollocation().activeChessman;
         boolean colour = active.getColour();
         int multi;
         if (colour) {
@@ -18,65 +25,87 @@ public class Queen extends Chessman {
         } else {
             multi = 1;
         }
-        // проверка хода или боя вперёд
-        //влево
-        if (flag == 1 || flag == 0) {
+        // РїСЂРѕРІРµСЂРєР° С…РѕРґР° РёР»Рё СЃСЉРµРґР°РЅРёСЏ РІРїРµСЂС‘Рґ
+        //РІР»РµРІРѕ
+
+        if (flag == 1 || flag == 0)
             try {
-                if (collocation.getChessman(changeCoordinates(oldCoordinate, multi, -1)) == null && flag == 0) {
+
+                if (collocation.getChessman(changeCoordinates(oldCoordinate, multi, -1)) == null) {
                     active.addAction(new Moving(oldCoordinate, changeCoordinates(oldCoordinate, multi, -1)));
-                    if (colour) {
-                        if (changeCoordinates(oldCoordinate, multi, -1)[0] == 0) {
-
-                        }
-                    }
-                } else {
-                    if (collocation.getChessman(changeCoordinates(oldCoordinate, multi * 2, -2)) == null && collocation.getChessman(changeCoordinates(oldCoordinate, multi, -1)) != null &&
-                            collocation.getChessman(changeCoordinates(oldCoordinate, multi, -1)).getColour() != colour && !active.actions.containsKey(changeCoordinates(oldCoordinate, multi * 2, -2))) {
-                        active.addAction(new Eating(changeCoordinates(oldCoordinate, multi, -1), oldCoordinate, changeCoordinates(oldCoordinate, multi * 2, -2)));
-                        computePossibleMove(changeCoordinates(oldCoordinate, multi * 2, -2), 1);
-                    }
+                    computePossibleMove(changeCoordinates(oldCoordinate, multi, -1), 1, collocation);
                 }
+                if (collocation.getChessman(changeCoordinates(oldCoordinate, multi * 2, -2)) == null && collocation.getChessman(changeCoordinates(oldCoordinate, multi, -1)) != null &&
+                        collocation.getChessman(changeCoordinates(oldCoordinate, multi, -1)).getColour() != colour &&
+                        !active.actions.containsAction(oldCoordinate, changeCoordinates(oldCoordinate, multi * 2, -2))) {
+                    active.addAction(new Eating(changeCoordinates(oldCoordinate, multi, -1), oldCoordinate, changeCoordinates(oldCoordinate, multi * 2, -2)));
+                    //computePossibleMove(changeCoordinates(oldCoordinate, multi * 2, -2), 5,collocation);
+                }
+
             } catch (ArrayIndexOutOfBoundsException e) {
             }
-        }
-        //вправо
-        if (flag == 2 || flag == 0) {
+        //РІРїСЂР°РІРѕ???
+        if (flag == 2 || flag == 0)
             try {
-                if (collocation.getChessman(changeCoordinates(oldCoordinate, multi, 1)) == null && flag == 0) {
+                if (collocation.getChessman(changeCoordinates(oldCoordinate, multi, 1)) == null) {
+                    System.out.println(1);
+                    System.out.println(Arrays.toString(oldCoordinate) + Arrays.toString(changeCoordinates(oldCoordinate, multi, 1)));
                     active.addAction(new Moving(oldCoordinate, changeCoordinates(oldCoordinate, multi, 1)));
-                } else {
-                    if (collocation.getChessman(changeCoordinates(oldCoordinate, multi * 2, 2)) == null && collocation.getChessman(changeCoordinates(oldCoordinate, multi, 1)) != null &&
-                            collocation.getChessman(changeCoordinates(oldCoordinate, multi, 1)).getColour() != colour && !active.actions.containsKey(changeCoordinates(oldCoordinate, multi * 2, 2))) {
-                        active.addAction(new Eating(changeCoordinates(oldCoordinate, multi, 1), oldCoordinate, changeCoordinates(oldCoordinate, multi * 2, 2)));
-                        computePossibleMove(changeCoordinates(oldCoordinate, multi * 2, 2), 2);
-                    }
+                    computePossibleMove(changeCoordinates(oldCoordinate, multi, 1), 2, collocation);
+                    System.out.println(2);
                 }
-            } catch (ArrayIndexOutOfBoundsException e) {
-            }
-        }
-        //проверка хода или боя назад
-        //влево
-        if (flag == 3 || flag == 0) {
-            try {
 
-                if (collocation.getChessman(changeCoordinates(oldCoordinate, multi * -2, 2)) == null && collocation.getChessman(changeCoordinates(oldCoordinate, multi * -1, 1)) != null &&
-                        collocation.getChessman(changeCoordinates(oldCoordinate, multi * -1, 1)).getColour() != colour && !active.actions.containsKey(changeCoordinates(oldCoordinate, multi * -2, 2))) {
-                    active.addAction(new Eating(changeCoordinates(oldCoordinate, multi * -1, 1), oldCoordinate, changeCoordinates(oldCoordinate, multi * -2, 2)));
-                    computePossibleMove(changeCoordinates(oldCoordinate, multi * -2, 2), 1);
+                if (collocation.getChessman(changeCoordinates(oldCoordinate, multi * 2, 2)) == null && collocation.getChessman(changeCoordinates(oldCoordinate, multi, 1)) != null &&
+                        collocation.getChessman(changeCoordinates(oldCoordinate, multi, 1)).getColour() != colour &&
+                        !active.actions.containsAction(oldCoordinate, changeCoordinates(oldCoordinate, multi * 2, 2))) {
+                    active.addAction(new Eating(changeCoordinates(oldCoordinate, multi, 1), oldCoordinate, changeCoordinates(oldCoordinate, multi * 2, 2)));
+                    //computePossibleMove(changeCoordinates(oldCoordinate, multi * 2, 2), 5,collocation);
                 }
             } catch (ArrayIndexOutOfBoundsException e) {
             }
-        }
-        //вправо
-        if (flag == 4 || flag == 0) {
+        //РїСЂРѕРІРµСЂРєР° СЃСЉРµРґР°РЅРёСЏ РЅР°Р·Р°Рґ
+        //РІР»РµРІРѕ
+        if (flag == 3 || flag == 0)
             try {
-                if (collocation.getChessman(changeCoordinates(oldCoordinate, multi * -2, -2)) == null && collocation.getChessman(changeCoordinates(oldCoordinate, multi * -1, -1)) != null &&
-                        collocation.getChessman(changeCoordinates(oldCoordinate, multi * -1, -1)).getColour() != colour && !active.actions.containsKey(changeCoordinates(oldCoordinate, multi * -2, -2))) {
-                    active.addAction(new Eating(changeCoordinates(oldCoordinate, multi * -1, -1), oldCoordinate, changeCoordinates(oldCoordinate, multi * -2, -2)));
-                    computePossibleMove(changeCoordinates(oldCoordinate, multi * -2, -2), 1);
+                if (collocation.getChessman(changeCoordinates(oldCoordinate, multi * -1, 1)) == null) {
+//                        if (changeCoordinates(oldCoordinate, multi, 1)[0] == 0 || changeCoordinates(oldCoordinate, multi, 1)[0] == 7 ||
+//                                changeCoordinates(oldCoordinate, multi, 1)[1] == 0 || changeCoordinates(oldCoordinate, multi, 1)[1] == 7)
+//                            break;
+                    active.addAction(new Moving(oldCoordinate, changeCoordinates(oldCoordinate, multi * -1, 1)));
+                    computePossibleMove(changeCoordinates(oldCoordinate, multi * -1, 1), 3, collocation);
+                }
+                if (collocation.getChessman(changeCoordinates(oldCoordinate, multi * -2, 2)) == null && collocation.getChessman(changeCoordinates(oldCoordinate, multi * -1, 1)) != null &&
+                        collocation.getChessman(changeCoordinates(oldCoordinate, multi * -1, 1)).getColour() != colour &&
+                        !active.actions.containsAction(oldCoordinate, changeCoordinates(oldCoordinate, multi * -2, 2))) {
+                    active.addAction(new Eating(changeCoordinates(oldCoordinate, multi * -1, 1), oldCoordinate, changeCoordinates(oldCoordinate, multi * -2, 2)));
+                    //computePossibleMove(changeCoordinates(oldCoordinate, multi * -2, 2), 5,collocation);
                 }
             } catch (ArrayIndexOutOfBoundsException e) {
             }
-        }
+        //РІРїСЂР°РІРѕ
+        if (flag == 4 || flag == 0)
+            try {
+                if (collocation.getChessman(changeCoordinates(oldCoordinate, multi * -1, -1)) == null) {
+//                        if (changeCoordinates(oldCoordinate, multi * -1, -1)[0] == 0 || changeCoordinates(oldCoordinate, multi * -1, -1)[0] == 7 ||
+//                                changeCoordinates(oldCoordinate, multi * -1, -1)[1] == 0 || changeCoordinates(oldCoordinate, multi * -1, -1)[1] == 7)
+//                            break;
+                    active.addAction(new Moving(oldCoordinate, changeCoordinates(oldCoordinate, multi * -1, -1)));
+                    computePossibleMove(changeCoordinates(oldCoordinate, multi * -1, -1), 4, collocation);
+                }
+                if (collocation.getChessman(changeCoordinates(oldCoordinate, multi * -2, -2)) == null && collocation.getChessman(changeCoordinates(oldCoordinate, multi * -1, -1)) != null &&
+                        collocation.getChessman(changeCoordinates(oldCoordinate, multi * -1, -1)).getColour() != colour &&
+                        !active.actions.containsAction(oldCoordinate, changeCoordinates(oldCoordinate, multi * -2, -2))) {
+                    active.addAction(new Eating(changeCoordinates(oldCoordinate, multi * -1, -1), oldCoordinate, changeCoordinates(oldCoordinate, multi * -2, -2)));
+                    //computePossibleMove(changeCoordinates(oldCoordinate, multi * -2, -2), 5,collocation);
+                }
+            } catch (ArrayIndexOutOfBoundsException e) {
+            }
+
+    }
+
+    public ArrayList<Integer> checkDiagonal(int[] coord) {
+        ArrayList<Integer> diagonals = new ArrayList<>();
+
+        return diagonals;
     }
 }

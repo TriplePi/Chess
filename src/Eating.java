@@ -10,6 +10,11 @@ public class Eating extends Moving {
         this.coordinateOfAtePawn = coordinateOfAtePawn;
     }
 
+    public Eating(int[] coordinateOfAtePawn, int[] oldCoordinates, int[] newCoordinates, boolean flag){
+        super(oldCoordinates,newCoordinates,flag);
+        this.coordinateOfAtePawn = coordinateOfAtePawn;
+    }
+
     @Override
     void doing() {
         super.doing();
