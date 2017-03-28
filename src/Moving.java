@@ -41,12 +41,13 @@ class Moving implements Comparable<Moving> {
     }
 
     void doing() {
-        collocation.activeChessman.changeCoordinates(newCoordinates);
+        collocation.getChessman(oldCoordinates).changeCoordinates(newCoordinates);
         System.out.println("fick");
-        System.out.println(this.flag);
+        collocation.updateCollocation();
+        collocation.test();
         if (flag) {
             System.out.println("fuck");
-            collocation.setQueen(newCoordinates);
+            ((Pawn)collocation.getChessman(newCoordinates)).replaceWithQueen();
         }
         collocation.updateCollocation();
     }

@@ -69,6 +69,7 @@ public class Pawn extends Chessman {
 //    }
 
     public void computePossibleMove(int[] oldCoordinate, int flag, Collocation oldCollacation) {
+
         Chessman active = Collocation.getCollocation().activeChessman;
         Collocation collocation = Collocation.getCollocation();
         boolean colour = active.getColour();
@@ -82,15 +83,16 @@ public class Pawn extends Chessman {
         //влево
         try {
             if (collocation.getChessman(changeCoordinates(oldCoordinate, multi, -1)) == null && flag == 0) {
-                if (check(changeCoordinates(oldCoordinate, multi, -1),collocation)) {
+                if (check(changeCoordinates(oldCoordinate, multi, -1), collocation)) {
+                    System.out.println("1");
                     active.addAction(new Moving(oldCoordinate, changeCoordinates(oldCoordinate, multi, -1), true));
-                }
-                active.addAction(new Moving(oldCoordinate, changeCoordinates(oldCoordinate, multi, -1)));
+                } else
+                    active.addAction(new Moving(oldCoordinate, changeCoordinates(oldCoordinate, multi, -1)));
             } else {
                 if (collocation.getChessman(changeCoordinates(oldCoordinate, multi * 2, -2)) == null && collocation.getChessman(changeCoordinates(oldCoordinate, multi, -1)) != null &&
                         collocation.getChessman(changeCoordinates(oldCoordinate, multi, -1)).getColour() != colour &&
                         !active.actions.containsAction(oldCoordinate, changeCoordinates(oldCoordinate, multi * 2, -2))) {
-                    if (check(changeCoordinates(oldCoordinate, multi * 2, -2),collocation)) {
+                    if (check(changeCoordinates(oldCoordinate, multi * 2, -2), collocation)) {
                         active.addAction(new Eating(changeCoordinates(oldCoordinate, multi, -1), oldCoordinate, changeCoordinates(oldCoordinate, multi * 2, -2), true));
                         return;
                     }
@@ -103,15 +105,16 @@ public class Pawn extends Chessman {
         //вправо
         try {
             if (collocation.getChessman(changeCoordinates(oldCoordinate, multi, 1)) == null && flag == 0) {
-                if (check(changeCoordinates(oldCoordinate, multi, 1),collocation)) {
+                if (check(changeCoordinates(oldCoordinate, multi, 1), collocation)) {
+                    System.out.println("2");
                     active.addAction(new Moving(oldCoordinate, changeCoordinates(oldCoordinate, multi, 1), true));
-                }
-                active.addAction(new Moving(oldCoordinate, changeCoordinates(oldCoordinate, multi, 1)));
+                } else
+                    active.addAction(new Moving(oldCoordinate, changeCoordinates(oldCoordinate, multi, 1)));
             } else {
                 if (collocation.getChessman(changeCoordinates(oldCoordinate, multi * 2, 2)) == null && collocation.getChessman(changeCoordinates(oldCoordinate, multi, 1)) != null &&
                         collocation.getChessman(changeCoordinates(oldCoordinate, multi, 1)).getColour() != colour &&
                         !active.actions.containsAction(oldCoordinate, changeCoordinates(oldCoordinate, multi * 2, 2))) {
-                    if (check(changeCoordinates(oldCoordinate, multi * 2, 2),collocation)) {
+                    if (check(changeCoordinates(oldCoordinate, multi * 2, 2), collocation)) {
                         active.addAction(new Eating(changeCoordinates(oldCoordinate, multi, 1), oldCoordinate, changeCoordinates(oldCoordinate, multi * 2, 2), true));
                         return;
                     }
@@ -127,8 +130,8 @@ public class Pawn extends Chessman {
             if (collocation.getChessman(changeCoordinates(oldCoordinate, multi * -2, 2)) == null && collocation.getChessman(changeCoordinates(oldCoordinate, multi * -1, 1)) != null &&
                     collocation.getChessman(changeCoordinates(oldCoordinate, multi * -1, 1)).getColour() != colour &&
                     !active.actions.containsAction(oldCoordinate, changeCoordinates(oldCoordinate, multi * -2, 2))) {
-                if(check(changeCoordinates(oldCoordinate, multi * -2, 2),collocation)){
-                    active.addAction(new Eating(changeCoordinates(oldCoordinate, multi * -1, 1), oldCoordinate, changeCoordinates(oldCoordinate, multi * -2, 2),true));
+                if (check(changeCoordinates(oldCoordinate, multi * -2, 2), collocation)) {
+                    active.addAction(new Eating(changeCoordinates(oldCoordinate, multi * -1, 1), oldCoordinate, changeCoordinates(oldCoordinate, multi * -2, 2), true));
                     return;
                 }
                 active.addAction(new Eating(changeCoordinates(oldCoordinate, multi * -1, 1), oldCoordinate, changeCoordinates(oldCoordinate, multi * -2, 2)));
@@ -141,8 +144,8 @@ public class Pawn extends Chessman {
             if (collocation.getChessman(changeCoordinates(oldCoordinate, multi * -2, -2)) == null && collocation.getChessman(changeCoordinates(oldCoordinate, multi * -1, -1)) != null &&
                     collocation.getChessman(changeCoordinates(oldCoordinate, multi * -1, -1)).getColour() != colour &&
                     !active.actions.containsAction(oldCoordinate, changeCoordinates(oldCoordinate, multi * -2, -2))) {
-                if(check(changeCoordinates(oldCoordinate, multi * -2, -2),collocation)){
-                    active.addAction(new Eating(changeCoordinates(oldCoordinate, multi * -1, 1), oldCoordinate, changeCoordinates(oldCoordinate, multi * -2, -2),true));
+                if (check(changeCoordinates(oldCoordinate, multi * -2, -2), collocation)) {
+                    active.addAction(new Eating(changeCoordinates(oldCoordinate, multi * -1, 1), oldCoordinate, changeCoordinates(oldCoordinate, multi * -2, -2), true));
                     return;
                 }
                 active.addAction(new Eating(changeCoordinates(oldCoordinate, multi * -1, -1), oldCoordinate, changeCoordinates(oldCoordinate, multi * -2, -2)));
@@ -153,12 +156,13 @@ public class Pawn extends Chessman {
     }
 
 
-    void replaceWithQueen(int[] coord) {
+    void replaceWithQueen() {
+        int[] coord = this.coordinate;
         Collocation.getCollocation().unsetChessman(coord);
         Collocation.getCollocation().setQueen(coord);
     }
 
-    boolean check(int[] coord,Collocation collocation) {
+    boolean check(int[] coord, Collocation collocation) {
         if (collocation.activeChessman.getColour()) {
             if (coord[0] == 0) {
                 return true;

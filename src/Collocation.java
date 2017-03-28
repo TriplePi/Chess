@@ -9,6 +9,10 @@ class Collocation implements Cloneable{
     Chessman activeChessman;
     private static Collocation collocationForAll;
 
+    public Chessman[][] getChessField() {
+        return chessField;
+    }
+
     public static Collocation getCollocation() {
         if (collocationForAll == null) {
             collocationForAll = new Collocation();
@@ -22,44 +26,44 @@ class Collocation implements Cloneable{
 
     private Collocation() {
         this.chessField = new Chessman[8][8];
-//        for (int i = 0; i < 4; i++)
-//            this.chessField[0][2 * i + 1] = new Pawn(false, 0, 2 * i + 1);
-//        for (int i = 0; i < 4; i++)
-//            this.chessField[1][2 * i] = new Pawn(false, 1, 2 * i);
-//        for (int i = 0; i < 4; i++)
-//            this.chessField[2][2 * i + 1] = new Pawn(false, 2, 2 * i + 1);
-//        for (int i = 0; i < 4; i++)
-//            this.chessField[5][2 * i] = new Pawn(true, 5, 2 * i);
-//        for (int i = 0; i < 4; i++)
-//            this.chessField[6][2 * i + 1] = new Pawn(true, 6, 2 * i + 1);
-//        for (int i = 0; i < 4; i++)
-//            this.chessField[7][2 * i] = new Pawn(true, 7, 2 * i);
-        int[][] a =
-                        {{0,0,0,0,0,0,0,0},
-                        {0,0,0,1,0,0,0,0},
-                        {0,0,0,0,0,0,0,0},
-                        {0,0,0,0,0,-1,0,0},
-                        {0,0,0,0,0,0,0,0},
-                        {0,0,0,2,0,0,0,0},
-                        {0,0,0,0,0,0,0,0},
-                        {0,0,0,0,0,0,0,0}};
-        for (int i = 0;i<8;i++){
-            for (int j = 0;j<8;j++){
-                if (a[i][j]==1){
-                    chessField[i][j]=new Pawn(true,i,j);
-                }
-                if(a[i][j]==-1){
-                    chessField[i][j]=new Pawn(false,i,j);
-                }
-                if (a[i][j]==2){
-                    chessField[i][j]=new Queen(true,i,j);
-                }
-                if(a[i][j]==-2){
-                    chessField[i][j]=new Queen(false,i,j);
-                }
-            }
-        }
-        test();
+        for (int i = 0; i < 4; i++)
+            this.chessField[0][2 * i + 1] = new Pawn(false, 0, 2 * i + 1);
+        for (int i = 0; i < 4; i++)
+            this.chessField[1][2 * i] = new Pawn(false, 1, 2 * i);
+        for (int i = 0; i < 4; i++)
+            this.chessField[2][2 * i + 1] = new Pawn(false, 2, 2 * i + 1);
+        for (int i = 0; i < 4; i++)
+            this.chessField[5][2 * i] = new Pawn(true, 5, 2 * i);
+        for (int i = 0; i < 4; i++)
+            this.chessField[6][2 * i + 1] = new Pawn(true, 6, 2 * i + 1);
+        for (int i = 0; i < 4; i++)
+            this.chessField[7][2 * i] = new Pawn(true, 7, 2 * i);
+//        int[][] a =
+//                        {{0,0,0,0,0,0,0,0},
+//                        {0,0,0,1,0,0,0,0},
+//                        {0,0,0,0,0,0,0,0},
+//                        {0,0,0,0,0,-1,0,0},
+//                        {0,0,0,0,0,0,0,0},
+//                        {0,0,0,2,0,0,0,0},
+//                        {0,0,0,0,0,0,0,0},
+//                        {0,0,0,0,0,0,0,0}};
+//        for (int i = 0;i<8;i++){
+//            for (int j = 0;j<8;j++){
+//                if (a[i][j]==1){
+//                    chessField[i][j]=new Pawn(true,i,j);
+//                }
+//                if(a[i][j]==-1){
+//                    chessField[i][j]=new Pawn(false,i,j);
+//                }
+//                if (a[i][j]==2){
+//                    chessField[i][j]=new Queen(true,i,j);
+//                }
+//                if(a[i][j]==-2){
+//                    chessField[i][j]=new Queen(false,i,j);
+//                }
+//            }
+//        }
+//        test();
     }
 
     void paintChessman(JLabel[][] labels, Icons icons) {

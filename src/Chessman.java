@@ -32,13 +32,17 @@ public abstract class Chessman {
         actions.add(action);
     }
 
+    public void computePossibleMove(){
+        computePossibleMove(this.coordinate,0,null);
+    }
+
     abstract void computePossibleMove(int[] oldCoordinate, int flag,Collocation oldCollacation);
 
     public boolean compareTo(Chessman chessman){
         return this.getCoordinate() == chessman.getCoordinate();
     }
 
-    public int[] changeCoordinates(int[] oldCoordinate, int addX, int addY) {
+    public static int[] changeCoordinates(int[] oldCoordinate, int addX, int addY) {
         int[] newCoordinates = {oldCoordinate[0] + addX, oldCoordinate[1] + addY};
         return newCoordinates;
     }

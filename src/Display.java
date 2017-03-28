@@ -22,6 +22,7 @@ public class Display extends JFrame {
     static final Icons icons = new Icons();
     public int[] focus;
     private boolean moveColour = true;
+    AI ai;
 
     Display() {
         super("Chess");
@@ -49,6 +50,7 @@ public class Display extends JFrame {
         getContentPane().add(chessFieldPanel, mainConstraints);
         Icons icons = new Icons();
         startField.paintChessman(chessField, icons);
+        ai = new AI(startField,false);
     }
 
     int[] convertCoordinate(double xCoord, double yCoord, JLabel label) {
@@ -151,7 +153,10 @@ public class Display extends JFrame {
                     startField.act(coordinatesOfLabel);
                     startField.test();
                     startField.activeChessman = null;
-                    moveColour = !moveColour;
+                    //moveColour = !moveColour;
+                    if(!moveColour == ai.colour){
+                        ai.colculate();
+                    }
                     startField.paintChessman(chessField, icons);
                 }
             }

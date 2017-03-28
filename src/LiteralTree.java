@@ -213,4 +213,12 @@ class LiteralTree {
         }
         return getBranch(flank(root).get(coord));
     }
+
+    HashSet<ArrayList<Moving>> getAllBranches(){
+        HashSet<ArrayList<Moving>> allBranches = new HashSet<>();
+        for (int[] key:flank(root).keySet()) {
+            allBranches.add(getBranchByCoord(key));
+        }
+        return allBranches;
+    }
 }
