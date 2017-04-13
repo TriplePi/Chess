@@ -11,13 +11,14 @@ public class Queen extends Chessman {
     }
 
     void computePossibleMove(int[] oldCoordinate, int flag, Collocation oldCollocation) {
-        Collocation collocation = Collocation.getCollocation();
+        //Collocation collocation = Collocation.getCollocation();
+        Collocation collocation = oldCollocation;
 //        try {
 //            collocation = Collocation.getCollocation().clone();
 //        }
 //        catch (CloneNotSupportedException e){
 //        }
-        Chessman active = Collocation.getCollocation().activeChessman;
+        Chessman active = collocation.activeChessman;
         boolean colour = active.getColour();
         int multi;
         if (colour) {
@@ -32,13 +33,13 @@ public class Queen extends Chessman {
             try {
 
                 if (collocation.getChessman(changeCoordinates(oldCoordinate, multi, -1)) == null) {
-                    active.addAction(new Moving(oldCoordinate, changeCoordinates(oldCoordinate, multi, -1)));
-                    computePossibleMove(changeCoordinates(oldCoordinate, multi, -1), 1, collocation);
+                    active.addAction(new Moving(oldCoordinate, changeCoordinates(oldCoordinate, multi, -1),collocation));
+                    computePossibleMove(changeCoordinates(oldCoordinate, multi, -1), 1, oldCollocation);
                 }
                 if (collocation.getChessman(changeCoordinates(oldCoordinate, multi * 2, -2)) == null && collocation.getChessman(changeCoordinates(oldCoordinate, multi, -1)) != null &&
                         collocation.getChessman(changeCoordinates(oldCoordinate, multi, -1)).getColour() != colour &&
                         !active.actions.containsAction(oldCoordinate, changeCoordinates(oldCoordinate, multi * 2, -2))) {
-                    active.addAction(new Eating(changeCoordinates(oldCoordinate, multi, -1), oldCoordinate, changeCoordinates(oldCoordinate, multi * 2, -2)));
+                    active.addAction(new Eating(changeCoordinates(oldCoordinate, multi, -1), oldCoordinate, changeCoordinates(oldCoordinate, multi * 2, -2),false,oldCollocation));
                     //computePossibleMove(changeCoordinates(oldCoordinate, multi * 2, -2), 5,collocation);
                 }
 
@@ -50,15 +51,15 @@ public class Queen extends Chessman {
                 if (collocation.getChessman(changeCoordinates(oldCoordinate, multi, 1)) == null) {
                     System.out.println(1);
                     System.out.println(Arrays.toString(oldCoordinate) + Arrays.toString(changeCoordinates(oldCoordinate, multi, 1)));
-                    active.addAction(new Moving(oldCoordinate, changeCoordinates(oldCoordinate, multi, 1)));
-                    computePossibleMove(changeCoordinates(oldCoordinate, multi, 1), 2, collocation);
+                    active.addAction(new Moving(oldCoordinate, changeCoordinates(oldCoordinate, multi, 1),oldCollocation));
+                    computePossibleMove(changeCoordinates(oldCoordinate, multi, 1), 2, oldCollocation);
                     System.out.println(2);
                 }
 
                 if (collocation.getChessman(changeCoordinates(oldCoordinate, multi * 2, 2)) == null && collocation.getChessman(changeCoordinates(oldCoordinate, multi, 1)) != null &&
                         collocation.getChessman(changeCoordinates(oldCoordinate, multi, 1)).getColour() != colour &&
                         !active.actions.containsAction(oldCoordinate, changeCoordinates(oldCoordinate, multi * 2, 2))) {
-                    active.addAction(new Eating(changeCoordinates(oldCoordinate, multi, 1), oldCoordinate, changeCoordinates(oldCoordinate, multi * 2, 2)));
+                    active.addAction(new Eating(changeCoordinates(oldCoordinate, multi, 1), oldCoordinate, changeCoordinates(oldCoordinate, multi * 2, 2),false,oldCollocation));
                     //computePossibleMove(changeCoordinates(oldCoordinate, multi * 2, 2), 5,collocation);
                 }
             } catch (ArrayIndexOutOfBoundsException e) {
@@ -71,13 +72,13 @@ public class Queen extends Chessman {
 //                        if (changeCoordinates(oldCoordinate, multi, 1)[0] == 0 || changeCoordinates(oldCoordinate, multi, 1)[0] == 7 ||
 //                                changeCoordinates(oldCoordinate, multi, 1)[1] == 0 || changeCoordinates(oldCoordinate, multi, 1)[1] == 7)
 //                            break;
-                    active.addAction(new Moving(oldCoordinate, changeCoordinates(oldCoordinate, multi * -1, 1)));
-                    computePossibleMove(changeCoordinates(oldCoordinate, multi * -1, 1), 3, collocation);
+                    active.addAction(new Moving(oldCoordinate, changeCoordinates(oldCoordinate, multi * -1, 1),oldCollocation));
+                    computePossibleMove(changeCoordinates(oldCoordinate, multi * -1, 1), 3, oldCollocation);
                 }
                 if (collocation.getChessman(changeCoordinates(oldCoordinate, multi * -2, 2)) == null && collocation.getChessman(changeCoordinates(oldCoordinate, multi * -1, 1)) != null &&
                         collocation.getChessman(changeCoordinates(oldCoordinate, multi * -1, 1)).getColour() != colour &&
                         !active.actions.containsAction(oldCoordinate, changeCoordinates(oldCoordinate, multi * -2, 2))) {
-                    active.addAction(new Eating(changeCoordinates(oldCoordinate, multi * -1, 1), oldCoordinate, changeCoordinates(oldCoordinate, multi * -2, 2)));
+                    active.addAction(new Eating(changeCoordinates(oldCoordinate, multi * -1, 1), oldCoordinate, changeCoordinates(oldCoordinate, multi * -2, 2),false,oldCollocation));
                     //computePossibleMove(changeCoordinates(oldCoordinate, multi * -2, 2), 5,collocation);
                 }
             } catch (ArrayIndexOutOfBoundsException e) {
@@ -89,13 +90,13 @@ public class Queen extends Chessman {
 //                        if (changeCoordinates(oldCoordinate, multi * -1, -1)[0] == 0 || changeCoordinates(oldCoordinate, multi * -1, -1)[0] == 7 ||
 //                                changeCoordinates(oldCoordinate, multi * -1, -1)[1] == 0 || changeCoordinates(oldCoordinate, multi * -1, -1)[1] == 7)
 //                            break;
-                    active.addAction(new Moving(oldCoordinate, changeCoordinates(oldCoordinate, multi * -1, -1)));
-                    computePossibleMove(changeCoordinates(oldCoordinate, multi * -1, -1), 4, collocation);
+                    active.addAction(new Moving(oldCoordinate, changeCoordinates(oldCoordinate, multi * -1, -1),oldCollocation));
+                    computePossibleMove(changeCoordinates(oldCoordinate, multi * -1, -1), 4, oldCollocation);
                 }
                 if (collocation.getChessman(changeCoordinates(oldCoordinate, multi * -2, -2)) == null && collocation.getChessman(changeCoordinates(oldCoordinate, multi * -1, -1)) != null &&
                         collocation.getChessman(changeCoordinates(oldCoordinate, multi * -1, -1)).getColour() != colour &&
                         !active.actions.containsAction(oldCoordinate, changeCoordinates(oldCoordinate, multi * -2, -2))) {
-                    active.addAction(new Eating(changeCoordinates(oldCoordinate, multi * -1, -1), oldCoordinate, changeCoordinates(oldCoordinate, multi * -2, -2)));
+                    active.addAction(new Eating(changeCoordinates(oldCoordinate, multi * -1, -1), oldCoordinate, changeCoordinates(oldCoordinate, multi * -2, -2),false,oldCollocation));
                     //computePossibleMove(changeCoordinates(oldCoordinate, multi * -2, -2), 5,collocation);
                 }
             } catch (ArrayIndexOutOfBoundsException e) {

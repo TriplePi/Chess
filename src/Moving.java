@@ -6,27 +6,25 @@ import java.util.Arrays;
 class Moving implements Comparable<Moving> {
     int[] oldCoordinates;
     int[] newCoordinates;
-    Collocation collocation = Collocation.getCollocation();
+    Collocation collocation;
     boolean flag;
 
-    public Moving(int[] oldCoordinates, int[] newCoordinates) {
+    public Moving(int[] oldCoordinates, int[] newCoordinates, boolean flag, Collocation collocation) {
         this.oldCoordinates = oldCoordinates;
         this.newCoordinates = newCoordinates;
-        flag = false;
+        this.flag =flag;
+        this.collocation = collocation;
 //        System.out.println("wrong");
 //        System.out.println(Arrays.toString(oldCoordinates));
 //        System.out.println(Arrays.toString(newCoordinates));
 //        System.out.println("whole");
     }
 
-    public Moving(int[] oldCoordinates, int[] newCoordinates, boolean flag) {
+    public Moving(int[] oldCoordinates, int[] newCoordinates, Collocation collocation) {
         this.oldCoordinates = oldCoordinates;
         this.newCoordinates = newCoordinates;
-        this.flag = flag;
-//        System.out.println("wrong");
-//        System.out.println(Arrays.toString(oldCoordinates));
-//        System.out.println(Arrays.toString(newCoordinates));
-//        System.out.println("whole");
+        this.flag = false;
+        this.collocation = collocation;
     }
 
 
@@ -41,14 +39,21 @@ class Moving implements Comparable<Moving> {
     }
 
     void doing() {
-        collocation.getChessman(oldCoordinates).changeCoordinates(newCoordinates);
-        System.out.println("fick");
-        collocation.updateCollocation();
-        collocation.test();
+        this.collocation.updateCollocation();
+        this.collocation.getChessman(oldCoordinates).changeCoordinates(newCoordinates);
+        //System.out.println("fick");
+        this.collocation.updateCollocation();
+        //collocation.test();
         if (flag) {
-            System.out.println("fuck");
-            ((Pawn)collocation.getChessman(newCoordinates)).replaceWithQueen();
+            //System.out.println("fuck");
+            ((Pawn) this.collocation.getChessman(newCoordinates)).replaceWithQueen(collocation);
         }
-        collocation.updateCollocation();
+        this.collocation.updateCollocation();
+//        collocation.paintChessman(Display.chessField,Display.icons);
+//        try {
+//            Thread.sleep(1500);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
     }
 }

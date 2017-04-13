@@ -6,15 +6,9 @@ import java.awt.*;
  */
 public class Runner {
     public static void main(String[] args) {
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                JFrame.setDefaultLookAndFeelDecorated(true);
-                JFrame frame = new Display();
-                frame.setPreferredSize(new Dimension(1200, 950));
-                frame.pack();
-                frame.setLocationRelativeTo(null);
-                frame.setVisible(true);
-            }
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            Menu menu = new Menu();
+            menu.setVisible(true);
         });
 
     }

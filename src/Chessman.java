@@ -32,8 +32,8 @@ public abstract class Chessman {
         actions.add(action);
     }
 
-    public void computePossibleMove(){
-        computePossibleMove(this.coordinate,0,null);
+    public void computePossibleMove(Collocation collocation){
+        computePossibleMove(this.coordinate,0,collocation);
     }
 
     abstract void computePossibleMove(int[] oldCoordinate, int flag,Collocation oldCollacation);

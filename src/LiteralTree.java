@@ -45,10 +45,10 @@ class LiteralTree {
         } else return false;
     }
 
-    boolean containsAction(int[] oldCoordinate,int[] newCoordinate){
+    boolean containsAction(int[] oldCoordinate, int[] newCoordinate) {
         HashSet<Moving> allMoves = oneMoreFlank(root);
-        for (Moving moving: allMoves) {
-            if(Arrays.equals(moving.oldCoordinates,oldCoordinate)&&(Arrays.equals(moving.newCoordinates,newCoordinate )))
+        for (Moving moving : allMoves) {
+            if (Arrays.equals(moving.oldCoordinates, oldCoordinate) && (Arrays.equals(moving.newCoordinates, newCoordinate)))
                 return true;
         }
         return false;
@@ -60,8 +60,8 @@ class LiteralTree {
         //System.out.println();
         //System.out.println(Arrays.toString(v.newCoordinates));
         HashSet<Node> allNodes = anotherFlank(root);
-        if (containsAction(v))
-            return;
+//        if (containsAction(v) || (v instanceof Eating && containsAction(new Eating(((Eating) v).coordinateOfAtePawn, v.newCoordinates, v.oldCoordinates, false, v.collocation))))
+//            return;
         for (Node node : allNodes) {
             int[] oldNodesCoord = node.finishCoordinates;
             int[] newNodeFinishCoord = v.newCoordinates;
@@ -70,25 +70,28 @@ class LiteralTree {
                 //System.out.println("Zahodish?");
                 String cmp = compareTo(oldNodesCoord, newNodeFinishCoord);
                 Node newNode = new Node(node.key + cmp, v, node);
-                //System.out.println("cmp" + cmp);
-                switch (cmp) {
-                    case "lt":
-                        //System.out.println("lt");
-                        node.lt = newNode;
-                        break;
-                    case "rt":
-                        //System.out.println("rt");
-                        node.rt = newNode;
-                        break;
-                    case "lb":
-                        node.lb = newNode;
-                        break;
-                    case "rb":
-                        System.out.println("???");
-                        node.rb = newNode;
-                        break;
+                if (!containsAteChessman(newNode)) {
+                    //System.out.println("cmp" + cmp);
+                    switch (cmp) {
+                        case "lt":
+                            //System.out.println("lt");
+                            node.lt = newNode;
+                            break;
+                        case "rt":
+                            //System.out.println("rt");
+                            node.rt = newNode;
+                            break;
+                        case "lb":
+                            node.lb = newNode;
+                            break;
+                        case "rb":
+                            System.out.println("???");
+                            node.rb = newNode;
+                            break;
+                    }
+                    break;
                 }
-                break;
+                else return;
             }
         }
     }
@@ -157,7 +160,7 @@ class LiteralTree {
 
     HashSet<Moving> oneMoreFlank(Node firstNode) {
         HashSet<Moving> moves = new HashSet<>();
-        if(firstNode.batya!= null)
+        if (firstNode.batya != null)
             moves.add(firstNode.value);
         if (firstNode.lt != null)
             moves.addAll(oneMoreFlank(firstNode.lt));
@@ -206,19 +209,32 @@ class LiteralTree {
     }
 
     ArrayList<Moving> getBranchByCoord(int[] coord) {
-        HashMap<int[],String> map = flank(root);
+        HashMap<int[], String> map = flank(root);
         for (int[] key : map.keySet()) {
-            if (Arrays.equals(coord,key))
+            if (Arrays.equals(coord, key))
                 return getBranch(map.get(key));
         }
         return getBranch(flank(root).get(coord));
     }
 
-    HashSet<ArrayList<Moving>> getAllBranches(){
+    HashSet<ArrayList<Moving>> getAllBranches() {
         HashSet<ArrayList<Moving>> allBranches = new HashSet<>();
-        for (int[] key:flank(root).keySet()) {
+        for (int[] key : flank(root).keySet()) {
             allBranches.add(getBranchByCoord(key));
         }
         return allBranches;
+    }
+
+    static boolean containsAteChessman(Node newNode) {
+        Node node = newNode;
+        if (node.value instanceof Eating) {
+            while (newNode.batya != null) {
+                if ((newNode.batya.value instanceof Eating) && Arrays.equals(((Eating) newNode.batya.value).coordinateOfAtePawn, ((Eating) node.value).coordinateOfAtePawn))
+                    return true;
+                newNode = newNode.batya;
+            }
+        }
+        return false;
+
     }
 }
